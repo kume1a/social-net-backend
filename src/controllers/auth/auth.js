@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import secret from './secret.js';
 import User from '../../models/user.js';
-import UserMeta from '../../models/user_meta.js';
 
 const postSignup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -24,17 +23,14 @@ const postSignup = async (req, res, next) => {
   const newUser = await User.create({
     email: email,
     password: passwordHash,
+    name: name,
   });
 
-  const id = newUser.id;
-  const imageUrl = 'https://firebasestorage.googleapis.com/v0/b/social-network-f5e86.appspot.com/o/profile_images%2Fdefault_profile.jpg?alt=media&token=aa9d25d5-bebc-4341-8953-68d1f97d6e51';
-
-  await UserMeta.create({id, name, imageUrl});
-
-  const token = jwt.sign({}, secret, {expiresIn: '1y'});
+  const userId = newUser.id;
+  const token = getToken(userId);
 
   res.json({
-    'userId': id,
+    'userId': userId,
     'token': token,
   });
 };
@@ -54,12 +50,7 @@ const postSignin = async (req, res, next) => {
   const correctCredentials = await bcrypt.compare(password, user.password);
 
   if (correctCredentials) {
-    const token = jwt.sign({
-      email: user.email,
-      id: user.id,
-    }, secret, {
-      expiresIn: '1y'
-    });
+    const token = getToken(user.id)
 
     res.json({
       'userId': user.id,
@@ -68,6 +59,14 @@ const postSignin = async (req, res, next) => {
   } else {
     next({statusCode: 401, error: new Error('unauthorized access, password or email invalid')});
   }
+}
+
+const getToken = (userId) => {
+  return jwt.sign({
+    userId: userId,
+  }, secret, {
+    expiresIn: '2y'
+  });
 }
 
 export {postSignup, postSignin};

@@ -3,8 +3,7 @@ import express from 'express';
 import {on404, onError} from './controllers/error.js';
 import sequelize from './models/db.js';
 import authRouter from './routes/auth.js';
-import userMetaRouter from './routes/users_meta.js';
-import authCheck from './controllers/auth/auth_check.js';
+import userMetaRouter from './routes/users.js';
 
 const {json} = pkg;
 
@@ -21,7 +20,7 @@ app.use((req, res, next) => {
   next();
 })
 
-app.use('/user_meta', authCheck, userMetaRouter);
+app.use('/users', userMetaRouter);
 app.use('/auth', authRouter);
 
 // noinspection JSCheckFunctionSignatures
