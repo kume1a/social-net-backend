@@ -4,6 +4,8 @@ import {on404, onError} from './controllers/error.js';
 import sequelize from './models/db.js';
 import authRouter from './routes/auth.js';
 import userMetaRouter from './routes/users.js';
+import authCheck from './controllers/auth/auth_check.js';
+import searchRouter from './routes/search.js';
 
 const {json} = pkg;
 
@@ -22,6 +24,7 @@ app.use((req, res, next) => {
 
 app.use('/users', userMetaRouter);
 app.use('/auth', authRouter);
+app.use('/search', authCheck, searchRouter);
 
 // noinspection JSCheckFunctionSignatures
 app.use(on404);

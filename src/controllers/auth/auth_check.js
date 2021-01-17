@@ -4,12 +4,10 @@ import secret from './secret.js';
 const authCheck = async (req, res, next) => {
   try {
     const token = req.get('Authorization');
-    console.log(`auth_check: token = ${token}`);
     const decodedToken = jwt.verify(token, secret);
 
-    console.log(decodedToken);
     if (!decodedToken) {
-      next({statusCode: 401, error: new Error('unauthorized')});
+      return next({statusCode: 401, error: new Error('unauthorized')});
     }
     res.userId = decodedToken.userId;
     next();

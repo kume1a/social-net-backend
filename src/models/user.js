@@ -6,11 +6,6 @@ const {DataTypes} = pkg;
 const defaultImageUrl = 'https://firebasestorage.googleapis.com/v0/b/social-network-f5e86.appspot.com/o/profile_images%2Fdefault_profile.jpg?alt=media&token=aa9d25d5-bebc-4341-8953-68d1f97d6e51';
 
 const User = sequelize.define('user', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
