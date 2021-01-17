@@ -1,13 +1,9 @@
-import {validationResult} from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import secret from './secret.js';
 import User from '../../models/user.js';
 
 const postSignup = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return next({statusCode: 422, error: errors});
-
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
@@ -36,9 +32,6 @@ const postSignup = async (req, res, next) => {
 };
 
 const postSignin = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return next({statusCode: 422, error: errors});
-
   const email = req.body.email;
   const password = req.body.password;
 
@@ -59,7 +52,7 @@ const postSignin = async (req, res, next) => {
   } else {
     next({statusCode: 401, error: new Error('unauthorized access, password or email invalid')});
   }
-}
+};
 
 const getToken = (userId) => {
   return jwt.sign({
@@ -67,6 +60,6 @@ const getToken = (userId) => {
   }, secret, {
     expiresIn: '2y'
   });
-}
+};
 
 export {postSignup, postSignin};

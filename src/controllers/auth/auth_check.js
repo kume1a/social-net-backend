@@ -9,7 +9,7 @@ const authCheck = async (req, res, next) => {
     if (!decodedToken) {
       return next({statusCode: 401, error: new Error('unauthorized')});
     }
-    res.userId = decodedToken.userId;
+    req.userId = decodedToken.userId;
     next();
   } catch (e) {
     if (e instanceof jwt.TokenExpiredError) {
@@ -20,5 +20,6 @@ const authCheck = async (req, res, next) => {
       next({statusCode: 500, error: new Error('unknown error')});
     }
   }
-}
+};
+
 export default authCheck;

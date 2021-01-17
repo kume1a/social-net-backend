@@ -1,15 +1,19 @@
 import express from 'express';
 import {param} from 'express-validator';
-import {getUser} from '../controllers/users.js';
+import {getUser, getFollowStatus, postSwitchFollowStatus} from '../controllers/users.js';
 import authCheck from '../controllers/auth/auth_check.js';
+import validationErrorHandler from '../controllers/core/errorHandler.js';
 
-const userMetaRouter = express.Router();
+const userRouter = express.Router();
 
 const idParamValidator = param('userId', 'invalid id')
   .exists()
   .isNumeric()
-  .isLength({min: 1});
+  .not()
+  .isEmpty()
 
-userMetaRouter.get('/:userId', authCheck, idParamValidator, getUser);
+userRouter.get('/:userId', authCheck, idParamValidator, validationErrorHandler, getUser);
+userRouter.get('/:userId/followStatus', authCheck, idParamValidator, validationErrorHandler, getFollowStatus);
+userRouter.post('/:userId/switchFollowStatus', authCheck, idParamValidator, validationErrorHandler, postSwitchFollowStatus);
 
-export default userMetaRouter;
+export default userRouter;

@@ -1,6 +1,7 @@
 import express from 'express';
 import {body} from 'express-validator';
 import {postSignin, postSignup} from '../controllers/auth/auth.js';
+import validationErrorHandler from '../controllers/core/errorHandler.js';
 
 const nameValidator = body('name', 'invalid name')
   .exists()
@@ -18,7 +19,7 @@ const passwordValidator = body('password', 'weak password')
 
 const authRouter = express.Router();
 
-authRouter.post('/signup', nameValidator, emailValidator, passwordValidator, postSignup);
-authRouter.post('/signin', emailValidator, passwordValidator, postSignin)
+authRouter.post('/signup', nameValidator, emailValidator, passwordValidator, validationErrorHandler, postSignup);
+authRouter.post('/signin', emailValidator, passwordValidator, validationErrorHandler, postSignin)
 
 export default authRouter;
