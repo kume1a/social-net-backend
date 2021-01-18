@@ -6,6 +6,9 @@ import authRouter from './routes/auth.js';
 import userRouter from './routes/users.js';
 import authCheck from './controllers/auth/auth_check.js';
 import searchRouter from './routes/search.js';
+import User from './models/user.js';
+import Post from './models/post.js';
+import postsRouter from './routes/posts.js';
 
 const {json} = pkg;
 
@@ -25,12 +28,15 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/search', authCheck, searchRouter);
+app.use('/posts', authCheck, postsRouter);
 
 // noinspection JSCheckFunctionSignatures
 app.use(on404);
 app.use(onError);
 
 try {
+  User.hasMany(Post, { onUpdate: 'CASCADE', onDelete: 'CASCADE'});
+  Post.belongsTo(User);
   await sequelize.sync({force: false});
   app.listen(port, host, () => console.log(`app: server available at http://${host}:${port}`));
 } catch (e) {
