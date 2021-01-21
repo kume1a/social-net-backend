@@ -9,6 +9,8 @@ import searchRouter from './routes/search.js';
 import User from './models/user.js';
 import Post from './models/post.js';
 import postsRouter from './routes/posts.js';
+import Like from './models/like.js';
+import LikeCount from './models/likeCount.js';
 
 const {json} = pkg;
 
@@ -35,8 +37,16 @@ app.use(on404);
 app.use(onError);
 
 try {
-  User.hasMany(Post, { onUpdate: 'CASCADE', onDelete: 'CASCADE'});
+  User.hasMany(Post);
   Post.belongsTo(User);
+
+  User.hasMany(Like);
+  Post.hasMany(Like);
+  Like.belongsTo(Post);
+
+  Post.hasOne(LikeCount);
+  LikeCount.belongsTo(Post);
+
   await sequelize.sync({force: false});
   app.listen(port, host, () => console.log(`app: server available at http://${host}:${port}`));
 } catch (e) {

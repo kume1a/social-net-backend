@@ -1,6 +1,8 @@
 import Post from '../models/post.js';
 import sequelize from '../models/db.js';
 import pkg from 'sequelize';
+import Like from '../models/like.js';
+import LikeCount from '../models/likeCount.js';
 
 const {QueryTypes, Op} = pkg;
 
@@ -12,12 +14,15 @@ const postPost = async (req, res, next) => {
 
   const now = new Date().getTime();
 
-  await Post.create({
+  const post = await Post.create({
     imageUrl: imageUrl,
     header: header,
     description: description,
     userId: userId,
     createdAt: now,
+  });
+  await LikeCount.create({
+    postId: post.id,
   });
 
   res.status(201).end();
@@ -54,11 +59,15 @@ const getFeedPosts = async (req, res, next) => {
 
   const feedPosts = await sequelize.query(`
       SELECT posts.*,
-             users.name     as user_name,
-             users.imageUrl as user_image_url,
-             users.bio      as user_bio
+             users.name           AS user_name,
+             users.imageUrl       AS user_image_url,
+             users.bio            AS user_bio,
+             likes.id IS NOT NULL AS is_liked,
+             like_counts.count    AS like_count
       FROM posts
                INNER JOIN users ON users.id = posts.userId
+               LEFT JOIN likes ON likes.postId = posts.id AND likes.userId = :userId
+               INNER JOIN like_counts ON like_counts.postId = posts.id
       WHERE users.id IN (
           SELECT follows.followedId
           FROM follows
@@ -110,7 +119,7 @@ const getExplorePosts = async (req, res, next) => {
     order: [
       ['likeCount', 'DESC']
     ],
-    where:{
+    where: {
       userId: {[Op.not]: Number.parseInt(userId)},
     }
   });
@@ -124,4 +133,44 @@ const getExplorePosts = async (req, res, next) => {
   });
 };
 
-export {postPost, getPosts, getFeedPosts, getExplorePosts};
+const postLike = async (req, res, next) => {
+  const userId = req.userId;
+  const postId = req.body.postId;
+
+  await Like.create({
+    userId: userId,
+    postId: postId,
+  })
+  await LikeCount.increment('count', {
+    by: 1,
+    where: {postId: postId},
+  });
+  res.end();
+};
+
+const postDislike = async (req, res, next) => {
+  const userId = req.userId;
+  const postId = req.body.postId;
+
+  await Like.destroy({
+    where: {
+      userId: userId,
+      postId: postId,
+    }
+  });
+  await LikeCount.decrement('count', {
+    by: 1,
+    where: {postId: postId},
+  });
+
+  res.end();
+};
+
+export {
+  postPost,
+  getPosts,
+  getFeedPosts,
+  getExplorePosts,
+  postLike,
+  postDislike,
+};
