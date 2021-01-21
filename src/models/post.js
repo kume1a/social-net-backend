@@ -26,6 +26,12 @@ const Post = sequelize.define('post', {
     allowNull: false,
     defaultValue: 0,
   },
+  createdAt: {
+    type: DataTypes.BIGINT,
+    allowNull: false
+  }
+}, {
+  timestamps: false
 });
 
 export default Post;
