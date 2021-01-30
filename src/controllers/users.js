@@ -7,7 +7,7 @@ const {Op} = pkg;
 const getUser = async (req, res, next) => {
   const userId = req.userId;
   const user = await User.findByPk(userId, {
-    attributes: ['id', 'name', 'imageUrl', 'bio']
+    attributes: ['id', 'name', 'imageUrl']
   });
   res.json(user.toJSON());
 };

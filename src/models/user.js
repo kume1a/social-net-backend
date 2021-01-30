@@ -3,7 +3,7 @@ import sequelize from './db.js';
 
 const {DataTypes} = pkg;
 
-const defaultImageUrl = 'https://firebasestorage.googleapis.com/v0/b/social-network-f5e86.appspot.com/o/profile_images%2Fdefault_profile.jpg?alt=media&token=aa9d25d5-bebc-4341-8953-68d1f97d6e51';
+const defaultImageUrl = 'https://firebasestorage.googleapis.com/v0/b/social-network-f5e86.appspot.com/o/profile%2Fdefault_profile.jpg?alt=media&token=ae2796f1-8acc-4b78-9d15-8b683c0786f3';
 
 const User = sequelize.define('user', {
   email: {
@@ -22,11 +22,6 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING(1024),
     allowNull: false,
     defaultValue: defaultImageUrl
-  },
-  bio: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: ''
   },
 });
 
