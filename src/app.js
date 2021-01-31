@@ -31,8 +31,8 @@ app.use((req, res, next) => {
   next();
 })
 
-app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/users', authCheck, userRouter);
 app.use('/search', authCheck, searchRouter);
 app.use('/posts', authCheck, postsRouter);
 app.use('/comments', authCheck, commentsRouter);

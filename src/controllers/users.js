@@ -1,6 +1,7 @@
 import User from '../models/user.js';
 import Follow from '../models/follow.js';
 import pkg from 'sequelize';
+import Post from '../models/post.js';
 
 const {Op} = pkg;
 
@@ -58,4 +59,29 @@ const getIfUserFollows = async (followeeId, followedId) => {
   return followRow != null;
 };
 
-export {getUser, getFollowStatus, postSwitchFollowStatus};
+const getUserMeta = async (req, res, next) => {
+    const userId = req.params.userId;
+
+    const followerCount = await Follow.count({
+      where: {followedId: userId}
+    });
+    const followingCount = await Follow.count({
+      where: {followeeId: userId}
+    });
+    const postCount = await Post.count({
+      where: {userId: userId}
+    });
+
+    res.json({
+      followingCount: followingCount,
+      followerCount: followerCount,
+      postCount: postCount,
+    })
+};
+
+export {
+  getUser,
+  getFollowStatus,
+  postSwitchFollowStatus,
+  getUserMeta
+};

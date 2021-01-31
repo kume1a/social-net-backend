@@ -76,7 +76,7 @@ const getComments = async (req, res, next) => {
         FROM comments
                  INNER JOIN users ON users.id = comments.userId
         WHERE comments.postId = :postId
-        ORDER BY createdAt
+        ORDER BY createdAt DESC
         LIMIT :dataOffset, :limit;
     `, {
         type: QueryTypes.SELECT,
@@ -112,7 +112,7 @@ const getReplies = async (req, res, next) => {
         FROM replies 
         INNER JOIN users ON users.id = replies.userId
         WHERE replies.commentId = :commentId
-        ORDER BY createdAt
+        ORDER BY createdAt DESC
         LIMIT :dataOffset, :limit;
     `, {
         type: QueryTypes.SELECT,
@@ -123,7 +123,7 @@ const getReplies = async (req, res, next) => {
         }
     });
     const total = await Reply.count({
-        commentId: commentId,
+        where: {commentId: commentId,}
     });
 
     res.json({

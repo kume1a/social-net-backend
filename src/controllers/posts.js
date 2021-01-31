@@ -25,7 +25,7 @@ const postPost = async (req, res, next) => {
     await LikeCount.create({postId: post.id,});
     await CommentCount.create({postId: post.id,});
 
-    res.status(201).end();
+    res.status(201).json(post.toJSON());
 };
 
 const getPosts = async (req, res, next) => {
@@ -36,7 +36,10 @@ const getPosts = async (req, res, next) => {
     const posts = await Post.findAll({
         limit: limit,
         offset: (page - 1) * limit,
-        where: {userId: userId}
+        where: {userId: userId},
+        order: [
+            ['createdAt', 'DESC']
+        ]
     });
 
     const total = await Post.count({
