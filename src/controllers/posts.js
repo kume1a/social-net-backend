@@ -13,7 +13,7 @@ const postPost = async (req, res, next) => {
     const description = req.body.description;
     const userId = req.userId;
 
-    const now = new Date().getTime();
+    const now = Date.now();
 
     const post = await Post.create({
         imageUrl: imageUrl,
@@ -56,7 +56,7 @@ const getPosts = async (req, res, next) => {
 };
 
 const getFeedPosts = async (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.userId;
     const page = Number.parseInt(req.query.page);
     const limit = Number.parseInt(req.query.limit);
 

@@ -12,7 +12,7 @@ const postComment = async (req, res, next) => {
     const postId = req.body.postId;
     const body = req.body.body;
 
-    const now = new Date().getTime();
+    const now = Date.now();
 
     const newComment = await Comment.create({
         body: body,
@@ -41,7 +41,7 @@ const postReply = async (req, res, next) => {
     const commentId = req.params.commentId;
     const body = req.body.body;
 
-    const now = new Date().getTime();
+    const now = Date.now();
 
     const newReply = await Reply.create({
         postId: postId,
@@ -123,7 +123,7 @@ const getReplies = async (req, res, next) => {
         }
     });
     const total = await Reply.count({
-        where: {commentId: commentId,}
+        where: {commentId: commentId}
     });
 
     res.json({

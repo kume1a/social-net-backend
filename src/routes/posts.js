@@ -3,14 +3,13 @@ import {body} from 'express-validator';
 import validationErrorHandler from '../controllers/core/errorHandler.js';
 import {getExplorePosts, getFeedPosts, getPosts, postDislike, postLike, postPost} from '../controllers/posts.js';
 import {
+  imageUrlValidator,
   limitQueryValidator,
   pageQueryValidator,
   userIdParamValidator
 } from './core/validators.js';
 
-const imageUrlValidator = body('imageUrl', 'invalid image url')
-  .exists()
-  .isURL();
+
 
 const headerValidator = body('header', 'invalid header').exists();
 const descriptionValidator = body('description', 'invalid description').exists();
@@ -26,7 +25,7 @@ postsRouter.post('/', imageUrlValidator, headerValidator, descriptionValidator, 
 postsRouter.post('/like', postIdValidator, validationErrorHandler, postLike);
 postsRouter.post('/dislike', postIdValidator, validationErrorHandler, postDislike);
 postsRouter.get('/user/:userId', userIdParamValidator, pageQueryValidator, limitQueryValidator, validationErrorHandler, getPosts);
-postsRouter.get('/feed/:userId', userIdParamValidator, pageQueryValidator, limitQueryValidator, validationErrorHandler, getFeedPosts);
+postsRouter.get('/feed', pageQueryValidator, limitQueryValidator, validationErrorHandler, getFeedPosts);
 postsRouter.get('/explore', pageQueryValidator, limitQueryValidator, validationErrorHandler, getExplorePosts);
 
 export default postsRouter;

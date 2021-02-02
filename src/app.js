@@ -15,6 +15,8 @@ import Comment from './models/comment.js';
 import Reply from './models/reply.js';
 import commentsRouter from './routes/comments.js';
 import CommentCount from './models/commentCount.js';
+import Story from './models/story.js';
+import storiesRouter from './routes/stories.js';
 
 const {json} = pkg;
 
@@ -36,6 +38,7 @@ app.use('/users', authCheck, userRouter);
 app.use('/search', authCheck, searchRouter);
 app.use('/posts', authCheck, postsRouter);
 app.use('/comments', authCheck, commentsRouter);
+app.use('/stories', authCheck, storiesRouter);
 
 // noinspection JSCheckFunctionSignatures
 app.use(on404);
@@ -62,6 +65,9 @@ try {
 
   Post.hasOne(CommentCount);
   CommentCount.belongsTo(Post);
+
+  User.hasMany(Story);
+  Story.belongsTo(User);
 
   await sequelize.sync({force: false});
   app.listen(port, host, () => console.log(`app: server available at http://${host}:${port}`));
